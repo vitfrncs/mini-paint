@@ -1,6 +1,7 @@
 import numpy as np
-from cores import *
 from config import *
+from PIL import Image
+import time
 
 # As coordenadas no canvas ficam trocadas pois o y cresce para baixo
 
@@ -28,8 +29,9 @@ class Canvas:
         self.pixels[ALTURA_BARRA_NAVEGACAO:, :] = 255
 
     def salvar(self):
-        #definir a função de salvar
-        return
+        img = Image.fromarray(self.pixels[ALTURA_BARRA_NAVEGACAO:ALTURA, :, :])
+        ts = int(time.time())
+        img.save(f"images/{ts}.png")
 
     def salvar_estado(self):
         self.backup = self.pixels.copy()  # copia o array inteiro
