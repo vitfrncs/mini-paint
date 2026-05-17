@@ -1,7 +1,7 @@
 import glfw
 import numpy as np
 from OpenGL.GL import *
-from canvas import Canvas
+from canvas import *
 from config import *
 from ui import UI
 
@@ -11,20 +11,6 @@ mouse_pressionado = False
 aguardando_segundo_clique = False
 x_inicio, y_inicio = 0, 0
 ui = UI(canvas)
-
-# def mouse_botao_callback(window, botao, acao, mods):
-#     global mouse_pressionado
-#     if botao == glfw.MOUSE_BUTTON_LEFT:
-#         if acao == glfw.PRESS:
-#             x, y = glfw.get_cursor_pos(window)
-#             if(y < ALTURA_BARRA_NAVEGACAO):
-#                 processar_acao(ui.botao_clicado(x, y))
-#                 return
-#             else:
-#                 mouse_pressionado = True
-#                 canvas.pintar(int(x), int(y))
-#         elif acao == glfw.RELEASE:
-#             mouse_pressionado = False
 
 def mouse_botao_callback(window, botao, acao, mods):
     global mouse_pressionado, x_inicio, y_inicio, aguardando_segundo_clique
@@ -47,15 +33,13 @@ def mouse_botao_callback(window, botao, acao, mods):
                 processar_acao(canvas.ferramenta_atual, x_inicio, y_inicio, x, y)
         else:
             mouse_pressionado = True
-            canvas.pintar(x, y)
+            if canvas.ferramenta_atual == "lapis":
+                canvas.pintar(x, y)
+            elif canvas.ferramenta_atual == "balde":
+                canvas.balde_tinta(x, y)
 
     elif acao == glfw.RELEASE:
         mouse_pressionado = False
-
-
-# def mouse_posicao_callback(window, x, y):
-#     if mouse_pressionado and y >= ALTURA_BARRA_NAVEGACAO:
-#         canvas.pintar(int(x), int(y))
 
 def mouse_posicao_callback(window, x, y):
     x, y = int(x), int(y)
@@ -90,10 +74,8 @@ def processar_acao(acao, x1=None, y1=None, x2=None, y2=None):
             canvas.desenhar_retangulo(x1, y1, x2, y2)
         elif acao == "retangulo_preenchido":
             canvas.desenhar_retangulo_preenchido(x1, y1, x2, y2)
-        # elif acao == "circulo":
-        #     canvas.desenhar_circulo(x1, y1, x2, y2)
-        # elif acao == "circulo_preenchido":
-        #     canvas.desenhar_circulo_preenchido(x1, y1, x2, y2)
+        elif acao == "circulo" or acao == "circulo_preenchido":
+             canvas.bresenham_circulo(x1, y1, x2, y2)
     elif isinstance(acao, tuple):
         canvas.cor_atual = acao
     else:

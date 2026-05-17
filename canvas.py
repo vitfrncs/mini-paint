@@ -86,11 +86,84 @@ class Canvas:
         self.bresenham_linha(x1, y1, x1, y2)
         self.bresenham_linha(x2, y1, x2, y2)
 
-    # def desenhar_retangulo_preenchido(self, x1, y1, x2, y2):
-    #     for y in range(min(y1, y2), max(y1, y2)):
-    #         self.bresenham_linha(x1, y, x2, y)
 
     def desenhar_retangulo_preenchido(self, x1, y1, x2, y2):
         xa, xb = min(x1, x2), max(x1, x2)
         ya, yb = min(y1, y2), max(y1, y2)
         self.pixels[ya:yb, xa:xb] = self.cor_atual
+
+    def bresenham_circulo(self, x1, y1, x2, y2):
+        raio = int(((x2-x1)**2 + (y2-y1)**2) ** 0.5)
+
+        x = 0
+        y = raio
+        d = 1 - raio
+
+        if self.ferramenta_atual == "circulo":
+            self.plotaOctetos(x1, y1, x, y)
+        elif self.ferramenta_atual == "circulo_preenchido":
+            self._preencher_linha(x1, y1, x, y)
+
+
+        while y > x:
+            if d < 0:
+                d += 2*x + 3
+            else:
+                d += 2 * (x-y) + 5
+                y -= 1
+            x += 1
+            if self.ferramenta_atual == "circulo":
+                self.plotaOctetos(x1, y1, x, y)
+            elif self.ferramenta_atual == "circulo_preenchido":
+                self._preencher_linha(x1, y1, x, y)
+            self.plotaOctetos(x1, y1, x, y)
+
+    def plotaOctetos(self, x1, y1, x, y):
+        self.pintar(x1 + x, y1 + y)
+        self.pintar(x1 - x, y1 + y)
+        self.pintar(x1 + x, y1 - y)
+        self.pintar(x1 - x, y1 - y)
+        self.pintar(x1 + y, y1 + x)
+        self.pintar(x1 - y, y1 + x)
+        self.pintar(x1 + y, y1 - x)
+        self.pintar(x1 - y, y1 - x)
+
+    def balde_tinta(self, x, y):
+        cor_pixel = self.get_pixel(x, y)
+
+        if cor_pixel is None:
+            return
+        if cor_pixel == self.cor_atual:
+            return
+
+        fila = [(x,y)]
+        visitados = set()
+
+        while fila:
+            cx, cy = fila.pop()
+            if (cx, cy) in visitados:
+                continue
+            if self.get_pixel(cx, cy) != cor_pixel:
+                continue
+
+            self.put_pixel(cx, cy, self.cor_atual)
+            visitados.add((cx, cy))
+
+            fila.append((cx + 1, cy))
+            fila.append((cx - 1, cy))
+            fila.append((cx, cy + 1))
+            fila.append((cx, cy - 1))
+
+
+    def _preencher_linha(self, cx, cy, x, y):
+        self.linha(cy + y, cx - x, cx + x)
+        self.linha(cy - y, cx - x, cx + x)
+        self.linha(cy + x, cx - y, cx + y)
+        self.linha(cy - x, cx - y, cx + y)
+
+    def linha(self, py, xa, xb):
+        if 0 <= py < self.altura:
+            xa = max(0, xa)
+            xb = min(self.largura, xb)
+            if xa < xb:
+                self.pixels[py, xa:xb] = self.cor_atual
