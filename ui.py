@@ -42,6 +42,7 @@ class UI:
             self.botoes.append(Button(x0, y0, x0+COR_W, y0+BTT_ALTURA, cor, cor, None))
 
     def botao_clicado(self, x, y):
+        """Retorna a função do botão clicado."""
         for botao in self.botoes:
             if botao.foi_clicado(x, y):
                 return botao.funcao

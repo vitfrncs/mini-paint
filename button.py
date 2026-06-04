@@ -13,9 +13,12 @@ class Button:
         self.descricao = descricao
 
     def foi_clicado(self, x, y):
+        """Verifica se o clique do mouse ocorreu na área delimitada do botão.
+            Se sim, retorna True, se não, retorna False."""
         return self.x1 < x < self.x2 and self.y1 < y < self.y2
 
     def desenhar_botao(self, canvas):
+        "Desenha botão na tela."
         canvas.pixels[self.y1:self.y2, self.x1:self.x2] = self.cor_fundo
 
         if self.descricao is not None:

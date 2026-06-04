@@ -1,5 +1,4 @@
 import glfw
-import numpy as np
 from OpenGL.GL import *
 from canvas import *
 from config import *
@@ -13,6 +12,7 @@ x_inicio, y_inicio = 0, 0
 ui = UI(canvas)
 
 def mouse_botao_callback(window, botao, acao, mods):
+    """Processa o clique do mouse e chama a ação correspondente ao botão pressionado por último."""
     global mouse_pressionado, x_inicio, y_inicio, aguardando_segundo_clique
     if botao == glfw.MOUSE_BUTTON_LEFT and acao == glfw.PRESS:
         x = int(glfw.get_cursor_pos(window)[0])
@@ -42,6 +42,7 @@ def mouse_botao_callback(window, botao, acao, mods):
         mouse_pressionado = False
 
 def mouse_posicao_callback(window, x, y):
+    """Processa a posição do mouse."""
     x, y = int(x), int(y)
 
     if aguardando_segundo_clique:
@@ -55,6 +56,7 @@ def mouse_posicao_callback(window, x, y):
 FERRAMENTAS_2_CLIQUES = ["linha", "retangulo", "retangulo_preenchido", "circulo", "circulo_preenchido"]
 
 def processar_acao(acao, x1=None, y1=None, x2=None, y2=None):
+    """Chama a função correspondente ao último botão selecionado"""
     if acao is None:
         return
     elif acao == "limpar":
@@ -67,7 +69,7 @@ def processar_acao(acao, x1=None, y1=None, x2=None, y2=None):
         canvas.espessura = ESPESSURA_MEDIA
     elif acao == "grosso":
         canvas.espessura = ESPESSURA_GROSSA
-    elif acao in FERRAMENTAS_2_CLIQUES and x1 is not None:  # ✅ só desenha se tiver coordenadas
+    elif acao in FERRAMENTAS_2_CLIQUES and x1 is not None:  # só desenha se tiver coordenadas
         if acao == "linha":
             canvas.bresenham_linha(x1, y1, x2, y2)
         elif acao == "retangulo":
@@ -94,6 +96,7 @@ def main():
     window = glfw.create_window(LARGURA, ALTURA, 'Mini Paint', None, None)
     glfw.make_context_current(window)
 
+    # processando cliques de acordo com botão selecionado
     glfw.set_mouse_button_callback(window, mouse_botao_callback)
     glfw.set_cursor_pos_callback(window, mouse_posicao_callback)
 
