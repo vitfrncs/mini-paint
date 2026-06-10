@@ -134,7 +134,7 @@ class Canvas:
         elif self.ferramenta_atual == "circulo_preenchido":
             self._preencher_linha(x1, y1, x, y)
 
-        while y > x:
+        while x <= y:
 
             # Escolhe o próximo pixel do círculo
             if d < 0:
@@ -154,7 +154,6 @@ class Canvas:
             elif self.ferramenta_atual == "circulo_preenchido":
                 self._preencher_linha(x1, y1, x, y)
 
-            self.plotaOctetos(x1, y1, x, y)
 
     def plotaOctetos(self, x1, y1, x, y):
         self.pintar(x1 + x, y1 + y)
@@ -189,7 +188,7 @@ class Canvas:
         if cor_pixel == self.cor_atual:
             return
 
-        fila = [(x, y)]
+        fila = [(x, y)] # Pontos a serem  processados
         visitados = set() # Armazena pixels já processados
 
         while fila:
@@ -210,7 +209,7 @@ class Canvas:
             visitados.add((cx, cy))
 
             # Adiciona os 4 vizinhos na fila para serem visitados
-            fila.append((cx + 1, cy))
-            fila.append((cx - 1, cy))
-            fila.append((cx, cy + 1))
-            fila.append((cx, cy - 1))
+            if not ((cx + 1, cy) in visitados): fila.append((cx + 1, cy))
+            if not ((cx - 1, cy) in visitados): fila.append((cx - 1, cy))
+            if not ((cx, cy + 1) in visitados): fila.append((cx, cy + 1))
+            if not ((cx, cy - 1) in visitados): fila.append((cx, cy - 1))
